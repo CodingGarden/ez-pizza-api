@@ -15,16 +15,19 @@ See [DOCS](./DOCS.md) for all available methods and descriptions of each.
 ## Example Usage
 
 ```js
-const ezPizzaAPI = require('ez-pizza-api');
+const ezPizzaAPI = require('./index');
 
 (async () => {
+  const cityRegionOrPostalCode = 'Denver, CO, 80202';
+  const streetAddress = '1280 Grant St';
+
   // Get a full list of stores near an address
-  const storesResult = ezPizzaAPI
-    .getStoresNearAddress(ezPizzaAPI.orderTypes.Carryout, 'Denver, CO, 80202');
+  const storesResult = await ezPizzaAPI
+    .getStoresNearAddress(ezPizzaAPI.orderTypes.Carryout, cityRegionOrPostalCode);
 
   // Get basic info about nearest delivery store to address
   const storeResult = await ezPizzaAPI
-    .getNearestDeliveryStore('Denver, CO, 80202', '1280 Grant St');
+    .getNearestDeliveryStore(cityRegionOrPostalCode, streetAddress);
 
   // Get full info about specified store
   const storeInfo = await ezPizzaAPI
@@ -34,10 +37,11 @@ const ezPizzaAPI = require('ez-pizza-api');
   const storeMenu = await ezPizzaAPI
     .getStoreMenu(storeResult.StoreID);
 
+  const couponId = '9193';
   // Get info for the specified store and coupon
   // Coupon ID found in the above menu request
   const coupon = await ezPizzaAPI
-    .getStoreCoupon(storeResult.StoreID, '9193');
+    .getStoreCoupon(storeResult.StoreID, couponId);
 
   // Create an Order with the following properties
   const order = {
@@ -51,9 +55,9 @@ const ezPizzaAPI = require('ez-pizza-api');
         StreetName: 'Sesame St',
         StreetNumber: '123',
       },
-      // Specify any coupons here
+      // Specify any coupons here, leave empty if not using a coupon
       Coupons: [{
-        Code: '9193',
+        Code: couponId,
         Qty: 1,
         ID: 2, // Specify your own IDs, increment if more than 1 specified
       }],
@@ -67,7 +71,7 @@ const ezPizzaAPI = require('ez-pizza-api');
       Payments: [],
       Phone: '1234567890', // <- Update this
       PhonePrefix: '1', // <- Update this
-      // An array of products. Find the corresponding code in the menu response.
+      // An array of products. Find the corresponding code and available options in the menu response.
       Products: [{
         Code: '12THIN',
         Qty: 1,
@@ -100,7 +104,7 @@ const ezPizzaAPI = require('ez-pizza-api');
         Qty: 1,
         isNew: true,
       }],
-      ServiceMethod: 'Delivery', // <- Update this can be Delivery or Carryout
+      ServiceMethod: ezPizzaAPI.orderTypes.Delivery, // <- Update this can be Delivery or Carryout
       SourceOrganizationURI: 'order.dominos.com',
       StoreID: storeResult.StoreID,
       Tags: {},
@@ -112,10 +116,12 @@ const ezPizzaAPI = require('ez-pizza-api');
   };
 
   const orderValid = await ezPizzaAPI.validateOrder(order);
-  order.Order.OrderID = orderValid.Order.OrderID;
-  const pricedOrder = await ezPizzaAPI.priceOrder(order);
+  order.Order.OrderID = orderValid.Order.OrderID; // get the generated orderID from the response
 
-  const Amount = pricedOrder.Order.Amounts.Customer;
+  const pricedOrder = await ezPizzaAPI.priceOrder(order);
+  const Amount = pricedOrder.Order.Amounts.Customer; // get total amount for order
+
+  // specify the amount and credit card info OR see how to use cash on delivery below
   order.Order.Payments.push({
     Amount,
     Type: 'CreditCard',
@@ -126,15 +132,25 @@ const ezPizzaAPI = require('ez-pizza-api');
     PostalCode: '80202',
   });
 
+  // OR
+  // specify the amount type as Cash
+  order.Order.Payments.push({
+    Amount,
+    Type: 'Cash', // <- Pay cash on delivery
+  });
+
   const placedOrder = await ezPizzaAPI.placeOrder(order);
   // For a succesful order, look for:
   // StoreOrderID
   // EmailHash
   // StatusItems: [ { Code: 'Success' } ] }
+
+  // Be sure to check your email before trying again.
+  // Sometimes this has a failure status but the order still goes through...
   console.log(placedOrder);
 
   // Getting the orderID may vary. Validate by looking at the placedOrder response
-  const orderID = placedOrder.Order.StoreOrderID.split('#')[1];
+  const orderID = placedOrder.Order.StoreOrderID.split('#')[1]; // <- This might change depending on store
   const orderStatus = await ezPizzaAPI.trackOrder(storeResult.StoreID, orderID);
   console.log(orderStatus);
 })();

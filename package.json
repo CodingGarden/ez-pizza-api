@@ -1,6 +1,6 @@
 {
   "name": "ez-pizza-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple library for interacting with the Dominos Pizza API.",
   "main": "index.js",
   "scripts": {
