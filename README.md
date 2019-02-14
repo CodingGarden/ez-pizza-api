@@ -15,7 +15,7 @@ See [DOCS](./DOCS.md) for all available methods and descriptions of each.
 ## Example Usage
 
 ```js
-const ezPizzaAPI = require('./index');
+const ezPizzaAPI = require('ez-pizza-api');
 
 (async () => {
   const cityRegionOrPostalCode = 'Denver, CO, 80202';
