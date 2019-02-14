@@ -1,21 +1,4 @@
-## 🍕 EZ Pizza API 🍕
-
-A simple library for interacting with the Dominos Pizza API.
-
-## Install
-
-```sh
-npm i ez-pizza-api
-```
-
-## DOCS
-
-See [DOCS](./DOCS.md) for all available methods and descriptions of each.
-
-## Example Usage
-
-```js
-const ezPizzaAPI = require('ez-pizza-api');
+const ezPizzaAPI = require('./index');
 
 (async () => {
   // Get a full list of stores near an address
@@ -138,4 +121,3 @@ const ezPizzaAPI = require('ez-pizza-api');
   const orderStatus = await ezPizzaAPI.trackOrder(storeResult.StoreID, orderID);
   console.log(orderStatus);
 })();
-```

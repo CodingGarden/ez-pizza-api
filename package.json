@@ -1,0 +1,30 @@
+{
+  "name": "ez-pizza-api",
+  "version": "1.0.0",
+  "description": "A simple library for interacting with the Dominos Pizza API.",
+  "main": "index.js",
+  "scripts": {
+    "docs": "jsdoc2md src/index.js > DOCS.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodingGarden/ez-pizza-api.git"
+  },
+  "keywords": [],
+  "author": "CJ R. <cj@null.computer> (https://w3cj.now.sh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CodingGarden/ez-pizza-api/issues"
+  },
+  "homepage": "https://github.com/CodingGarden/ez-pizza-api#readme",
+  "dependencies": {
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "jsdoc": "^3.5.5",
+    "jsdoc-to-markdown": "^4.0.1"
+  }
+}
