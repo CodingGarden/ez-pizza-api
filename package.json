@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/CodingGarden/ez-pizza-api#readme",
   "dependencies": {
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^3.1.1"
   },
   "devDependencies": {
     "eslint": "^5.13.0",
